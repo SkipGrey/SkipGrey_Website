@@ -5,66 +5,68 @@ export default {
   theme: {
     extend: {
       colors: {
-        obsidian: '#090A0F',
-        zinc: {
-          deep: '#12131A',
-          card: '#181923',
-          line: '#262734',
-        },
-        brand: {
-          indigo: '#6366F1',
-          cyan: '#06B6D4',
-          violet: '#8B5CF6',
-        },
         ink: {
-          light: '#F8FAFC',
-          slate: '#F1F5F9',
-          card: '#FFFFFF',
-          line: '#E2E8F0',
-          text: '#0F172A',
-          subtle: '#64748B',
+          0: '#000000',
+          950: '#050505',
+          900: '#0A0A0A',
+          800: '#101010',
+          700: '#171717',
+          600: '#1F1F1F',
+          500: '#2A2A2A',
+        },
+        pearl: {
+          0: '#FFFFFF',
+          50: '#FAFAFA',
+          100: '#F3F4F6',
+          200: '#E5E7EB',
+          300: '#D1D5DB',
+          400: '#9CA3AF',
+        },
+        silver: {
+          DEFAULT: '#C8C9CB',
+          dark: '#8A8B8E',
+          light: '#E8E8EA',
+        },
+        gold: {
+          50: '#FBF7EF',
+          100: '#F5EBD8',
+          200: '#E9D5AE',
+          300: '#D9B97C',
+          400: '#C9A259',
+          500: '#B8924A',
+          600: '#9A7839',
+          700: '#7A5D2E',
+          800: '#5C4724',
+          900: '#3F311A',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['"Space Grotesk"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        serif: ['"Playfair Display"', 'ui-serif', 'Georgia', 'serif'],
+        sans: ['"Manrope"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Playfair Display"', 'ui-serif', 'Georgia', 'serif'],
       },
-      boxShadow: {
-        glow: '0 0 40px -10px rgba(99, 102, 241, 0.5)',
-        'glow-cyan': '0 0 40px -10px rgba(6, 182, 212, 0.45)',
-        'glow-violet': '0 0 40px -10px rgba(139, 92, 246, 0.45)',
-        card: '0 10px 40px -12px rgba(0, 0, 0, 0.45)',
-        'card-light': '0 10px 40px -12px rgba(15, 23, 42, 0.12)',
+      letterSpacing: {
+        ultra: '0.5em',
+        widest2: '0.25em',
       },
-      backgroundImage: {
-        'grid-dark':
-          'linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)',
-        'grid-light':
-          'linear-gradient(to right, rgba(15,23,42,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(15,23,42,0.05) 1px, transparent 1px)',
+      transitionTimingFunction: {
+        cinematic: 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
       keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0) translateX(0)' },
-          '50%': { transform: 'translateY(-24px) translateX(12px)' },
-        },
-        'pulse-soft': {
-          '0%, 100%': { opacity: '0.6' },
-          '50%': { opacity: '1' },
+        scrollLine: {
+          '0%': { transform: 'scaleY(0)', transformOrigin: 'top' },
+          '50%': { transform: 'scaleY(1)', transformOrigin: 'top' },
+          '51%': { transformOrigin: 'bottom' },
+          '100%': { transform: 'scaleY(0)', transformOrigin: 'bottom' },
         },
         shimmer: {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
-        },
-        'spin-slow': {
-          to: { transform: 'rotate(360deg)' },
+          '0%': { transform: 'translateX(-120%) skewX(-12deg)' },
+          '100%': { transform: 'translateX(220%) skewX(-12deg)' },
         },
       },
       animation: {
-        float: 'float 14s ease-in-out infinite',
-        'pulse-soft': 'pulse-soft 2.4s ease-in-out infinite',
-        shimmer: 'shimmer 2.5s linear infinite',
-        'spin-slow': 'spin-slow 18s linear infinite',
+        scrollLine: 'scrollLine 2.6s ease-in-out infinite',
+        shimmer: 'shimmer 1.4s ease-in-out',
       },
     },
   },
