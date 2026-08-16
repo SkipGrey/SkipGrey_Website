@@ -1,36 +1,41 @@
-import { useState } from 'react';
-import { AmbientBackground } from '@/components/AmbientBackground';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import { ThemeProvider } from '@/context/ThemeContext';
 import { Navbar } from '@/components/Navbar';
-import { Hero } from '@/components/Hero';
+import { CinematicHero } from '@/components/CinematicHero';
 import { Ventures } from '@/components/Ventures';
-import { Stats } from '@/components/Stats';
 import { Founder } from '@/components/Founder';
-import { Timeline } from '@/components/Timeline';
-import { Contact } from '@/components/Contact';
-import { ContactModal } from '@/components/ContactModal';
+import { Philosophy } from '@/components/Philosophy';
 import { Footer } from '@/components/Footer';
-import { useTheme } from '@/hooks/useTheme';
+
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.001,
+  });
+  return (
+    <motion.div
+      style={{ scaleX }}
+      className="fixed top-0 left-0 right-0 z-[60] h-px origin-left bg-ink-900 dark:bg-pearl-0"
+    />
+  );
+}
 
 export default function App() {
-  const { theme, toggle } = useTheme();
-  const [contactOpen, setContactOpen] = useState(false);
-
   return (
-    <div className="relative min-h-screen">
-      <AmbientBackground />
-      <Navbar theme={theme} onToggleTheme={toggle} onContact={() => setContactOpen(true)} />
-
-      <main>
-        <Hero />
-        <Ventures />
-        <Stats />
-        <Founder />
-        <Timeline />
-        <Contact />
-      </main>
-
-      <Footer />
-      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
-    </div>
+    <ThemeProvider>
+      <div className="relative min-h-screen bg-pearl-0 dark:bg-ink-900 transition-colors duration-700 ease-cinematic">
+        <ScrollProgress />
+        <Navbar />
+        <main>
+          <CinematicHero />
+          <Ventures />
+          <Philosophy />
+          <Founder />
+        </main>
+        <Footer />
+      </div>
+    </ThemeProvider>
   );
 }

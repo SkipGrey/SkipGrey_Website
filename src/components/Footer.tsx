@@ -1,194 +1,174 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
-import { Logo } from './Logo';
-import { ventures } from '@/data/content';
-import { supabase } from '@/lib/supabase';
+import { useState, type FormEvent } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Check } from 'lucide-react';
+import { easeCinematic } from '@/lib/motion';
 
-const linkColumns = [
-  {
-    title: 'Company',
-    links: [
-      { label: 'Ecosystem Vision', id: 'vision' },
-      { label: 'Founder / Leadership', id: 'founder' },
-      { label: 'Live Stats', id: 'stats' },
-      { label: 'Contact', id: 'contact' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { label: 'Engineering Blog', href: 'https://media.skipgrey.com' },
-      { label: 'Academy Curriculum', href: 'https://academy.skipgrey.com' },
-      { label: 'Studio Engagement', href: 'https://studio.skipgrey.com' },
-      { label: 'Insights & Blog', id: 'insights' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { label: 'Privacy Policy', id: 'legal' },
-      { label: 'Terms of Service', id: 'legal' },
-      { label: 'Cookie Policy', id: 'legal' },
-      { label: 'Venture Partnerships', id: 'contact' },
-    ],
-  },
+const VENTURE_LINKS = [
+  { label: 'Skipgrey Academy', href: 'https://academy.skipgrey.com' },
+  { label: 'Skipgrey Fashion House', href: 'https://fashion.skipgrey.com' },
+  { label: 'Skipgrey Software Studio', href: 'https://studio.skipgrey.com' },
+  { label: 'Skipgrey Print & Media', href: 'https://print.skipgrey.com' },
+];
+
+const COMPANY_LINKS = [
+  { label: 'Ventures', href: '#ventures' },
+  { label: 'Our Vision', href: '#philosophy' },
+  { label: 'Founder', href: '#founder' },
+  { label: 'Contact', href: '#contact' },
+];
+
+const LEGAL_LINKS = [
+  { label: 'Privacy', href: '#' },
+  { label: 'Terms', href: '#' },
+  { label: 'Cookies', href: '#' },
 ];
 
 export function Footer() {
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [error, setError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
-  async function subscribe(e: React.FormEvent) {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (status === 'loading') return;
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setStatus('error');
-      setError('Enter a valid email address.');
-      return;
-    }
-    setStatus('loading');
-    setError('');
-    const { error: dbError } = await supabase
-      .from('newsletter_subscribers')
-      .insert({ email: email.trim() });
-    if (dbError) {
-      // Unique constraint = already subscribed — treat as success
-      if (dbError.code === '23505') {
-        setStatus('success');
-        setEmail('');
-        return;
-      }
-      setStatus('error');
-      setError('Could not subscribe. Please try again.');
-      return;
-    }
-    setStatus('success');
+    if (!email) return;
+    setSubmitted(true);
     setEmail('');
-  }
-
-  const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    window.setTimeout(() => setSubmitted(false), 3200);
+  };
 
   return (
-    <footer className="relative border-t pt-16">
-      <div className="container-page">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
-          {/* Brand + newsletter */}
-          <div className="lg:pr-6">
-            <Logo />
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
-              A multidisciplinary holding collective building across software, education,
-              apparel, and media.
-            </p>
+    <footer id="contact" className="relative bg-ink-900 dark:bg-ink-0 text-pearl-0">
+      {/* Top hairline */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-silver/30 to-transparent" />
 
-            <form onSubmit={subscribe} className="mt-6 max-w-sm">
-              <p className="text-xs font-medium uppercase tracking-wider text-faint">
-                Skipgrey Group releases
-              </p>
-              <div className="mt-2 flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@email.com"
-                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-soft)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-faint)] focus:border-brand-indigo focus:outline-none focus:ring-2 focus:ring-brand-indigo/20"
-                />
-                <button
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="btn-primary shrink-0 px-4 disabled:opacity-70"
+      {/* Newsletter band */}
+      <div className="mx-auto max-w-7xl px-6 lg:px-10 py-24 lg:py-32 border-b border-ink-700">
+        <div className="grid lg:grid-cols-12 gap-10 items-end">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 1, ease: easeCinematic }}
+            className="lg:col-span-7"
+          >
+            <span className="label-eyebrow text-gold-300/90">Skipgrey Insights</span>
+            <h2 className="mt-5 font-display text-4xl lg:text-5xl font-light leading-[1.05] tracking-tight text-balance">
+              Occasional dispatches on building, craft, and the long view.
+            </h2>
+          </motion.div>
+
+          <motion.form
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 1, ease: easeCinematic, delay: 0.15 }}
+            className="lg:col-span-5"
+          >
+            <label htmlFor="newsletter" className="block font-sans text-[11px] uppercase tracking-[0.22em] text-silver/70 mb-4">
+              Subscribe to Skipgrey Insights
+            </label>
+            <div className="relative flex items-center border-b border-ink-600 focus-within:border-pearl-0 transition-colors duration-500">
+              <input
+                id="newsletter"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                className="w-full bg-transparent py-3 pr-12 font-sans text-base text-pearl-0 placeholder:text-silver/40 focus:outline-none"
+              />
+              <button
+                type="submit"
+                aria-label="Subscribe"
+                className="absolute right-0 grid h-9 w-9 place-items-center text-gold-300 hover:text-gold-200 transition-colors duration-300"
+              >
+                <motion.span
+                  key={submitted ? 'ok' : 'arrow'}
+                  initial={{ opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, ease: easeCinematic }}
                 >
-                  {status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Subscribe'}
-                </button>
-              </div>
-              <AnimatePresence>
-                {status === 'success' && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mt-2 flex items-center gap-1.5 text-xs text-emerald-500"
-                  >
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                    You&rsquo;re on the list.
-                  </motion.p>
-                )}
-                {status === 'error' && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mt-2 flex items-center gap-1.5 text-xs text-red-500"
-                  >
-                    <AlertCircle className="h-3.5 w-3.5" />
-                    {error}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </form>
+                  {submitted ? <Check className="h-5 w-5" strokeWidth={1.25} /> : <ArrowRight className="h-5 w-5" strokeWidth={1.25} />}
+                </motion.span>
+              </button>
+            </div>
+            <p className="mt-3 font-sans text-[11px] text-silver/50">
+              {submitted ? 'Thank you — you are on the list.' : 'No noise. Unsubscribe anytime.'}
+            </p>
+          </motion.form>
+        </div>
+      </div>
+
+      {/* Link columns */}
+      <div className="mx-auto max-w-7xl px-6 lg:px-10 py-16 lg:py-20">
+        <div className="grid grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+          {/* Brand */}
+          <div className="col-span-2 lg:col-span-4">
+            <a href="#top" className="font-display text-2xl font-medium tracking-[0.28em] text-pearl-0">
+              SKIPGREY
+            </a>
+            <p className="mt-5 max-w-xs font-sans text-sm leading-relaxed text-silver/70">
+              A multi-disciplinary holding company building enduring ventures across education,
+              apparel, software, and physical media.
+            </p>
           </div>
 
-          {/* Ventures column */}
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-faint">Ventures</p>
-            <ul className="mt-4 space-y-2.5">
-              {ventures.map((v) => (
-                <li key={v.id}>
+          {/* Ventures */}
+          <div className="lg:col-span-3 lg:col-start-6">
+            <h3 className="label-eyebrow text-silver/60 mb-5">Ventures</h3>
+            <ul className="space-y-3">
+              {VENTURE_LINKS.map((l) => (
+                <li key={l.label}>
                   <a
-                    href={v.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-[var(--text)]"
+                    href={l.href}
+                    target={l.href.startsWith('http') ? '_blank' : undefined}
+                    rel={l.href.startsWith('http') ? 'noreferrer' : undefined}
+                    className="font-sans text-sm text-silver hover:text-pearl-0 transition-colors duration-300"
                   >
-                    {v.name.replace('Skipgrey ', '')}
-                    <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
+                    {l.label}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Other columns */}
-          {linkColumns.map((col) => (
-            <div key={col.title}>
-              <p className="text-xs font-semibold uppercase tracking-wider text-faint">{col.title}</p>
-              <ul className="mt-4 space-y-2.5">
-                {col.links.map((link) => (
-                  <li key={link.label}>
-                    {link.href ? (
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-sm text-muted transition-colors hover:text-[var(--text)]"
-                      >
-                        {link.label}
-                      </a>
-                    ) : (
-                      <button
-                        onClick={() => link.id && go(link.id)}
-                        className="text-sm text-muted transition-colors hover:text-[var(--text)]"
-                      >
-                        {link.label}
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Company */}
+          <div className="lg:col-span-2">
+            <h3 className="label-eyebrow text-silver/60 mb-5">Company</h3>
+            <ul className="space-y-3">
+              {COMPANY_LINKS.map((l) => (
+                <li key={l.label}>
+                  <a href={l.href} className="font-sans text-sm text-silver hover:text-pearl-0 transition-colors duration-300">
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div className="lg:col-span-2">
+            <h3 className="label-eyebrow text-silver/60 mb-5">Legal</h3>
+            <ul className="space-y-3">
+              {LEGAL_LINKS.map((l) => (
+                <li key={l.label}>
+                  <a href={l.href} className="font-sans text-sm text-silver hover:text-pearl-0 transition-colors duration-300">
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t py-6 sm:flex-row">
-          <p className="text-xs text-faint">© 2026 Skipgrey Group. All rights reserved.</p>
-          <span className="flex items-center gap-2 text-xs text-muted">
-            <motion.span
-              className="h-1.5 w-1.5 rounded-full bg-emerald-500"
-              animate={{ opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              style={{ boxShadow: '0 0 8px 1px rgba(16,185,129,0.6)' }}
-            />
-            All Systems Operational
-          </span>
+        {/* Bottom bar */}
+        <div className="mt-16 pt-8 border-t border-ink-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <p className="font-sans text-[11px] tracking-[0.08em] text-silver/50">
+            © {new Date().getFullYear()} Skipgrey Holding. All rights reserved.
+          </p>
+          <p className="font-sans text-[11px] tracking-[0.08em] text-silver/40">
+            skipgrey.com
+          </p>
         </div>
       </div>
     </footer>
